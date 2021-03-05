@@ -72,3 +72,55 @@ NAT instances are customer-managed instances responsible for network address tra
 - Must manage security group rules
 
 ## NAT Gateway
+
+AWS Managed NAT with higher bandwidth (5 Gpbs to 45 Gbps), high available and scales automatically.
+
+NAT Gateway requires a Internet Gateway and a route table setup, but it doesn't need an security group to manage it.
+
+It can only be used by instances on a different AZ.
+
+![NAT Gateway Overview](assets/natg-overview.png "NAT Gateway Overview")
+
+## Network ACL and Security Group
+
+Before understanding how NACL and SGs works, it important to understant two concepts:
+
+> **Stateless:** Can be understood as in isolation. Each transaction is made as if from scratch for the first time.
+> **Stateful:** Performed with the context of previous transactions.
+
+With that in mind, we can understand how the network flow is evaluated.
+
+### **Inbound/Incoming Traffic**
+
+For inbound traffic:
+1. Request is evaluated at the NACL level - NACL Inboud Rule
+2. Request is evaluated at the SG level - SG Inboud Rule
+3. Request is not evaluated at the SG level (Stateful) - SG Outbound Rule
+4. Request is evaluated at the NACL level (Stateless) - NACL Outbound Rule
+
+![SG and NACL Inboud Traffic](assets/sg-nacl-inbound.png "SG and NACL Inboud Traffic")
+
+### **Outbound/Outgoing Traffic**
+
+For Outbound traffic:
+1. Request is evaluated at the SG level - SG Outbound Rule
+2. Request is evaluated at the NACL level - NACL Outbound Rule
+3. Request is evaluated at the NACL level (Stateless) - NACL Inbound Rule
+4. Request is not evaluated at the SG level (Stateful) - SG Inbound Rule
+
+![SG and NACL Outbound Traffic](assets/sg-nacl-outbound.png "SG and NACL Outbound Traffic")
+
+### **NACL**
+
+Network Access Control Lists controls the network traffic from and to the subnets.
+
+Each subnet can have one NACL assigned, when they are created, they are assigned to the Default NACL.
+
+Default NACL allows everything, outbound and inbound, while newly created NACL will deny everything.
+
+Rules:
+- Rules have a number (1-32766), where lower number has a higher priority
+- If two rules are contradictory, lower number will be applied.
+- Last rule is an asterisk (*) and denies in case of no match
+
+## VPC Peering
