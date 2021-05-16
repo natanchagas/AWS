@@ -124,3 +124,29 @@ Rules:
 - Last rule is an asterisk (*) and denies in case of no match
 
 ## VPC Peering
+
+VPC Peering is a way to connect one VPC to another so they can behave as they are on the same network.
+
+> ***Do not have overlaping CIDR***
+
+Peering is not transitive. A VPC peering must be established between each VPC
+
+![VPC Peering](assets/vpc-peering.png "VPC Peering")
+
+The first VPC can only access the resources from the second. 
+
+The second VPC can access the resources from the first and the third.
+
+The third VPC can only access the resources from the second.
+
+## VPC Endpoint
+
+VPC Endpoints can be create so your resources can access AWS services without the need to connect to the internet.
+
+There two type of endpoints:
+- Interface Endpoint: service uses an ENI as an entry point - and require a Security Group
+- Gateway Endpoint: **For S3 and DynamoDB** - and requires a route table entry.
+
+![VPC Endpoint](assets/vpc-endpoint.png "VPC Endpoint")
+
+## Site to site VPN, Virtual Private Gateway & Customer Gateway
